@@ -26,9 +26,6 @@ earthGroup.rotation.z = (-23.4 * Math.PI) / 180;
 // Add Earthgrpup to scene
 scene.add(earthGroup);
 
-const stars = getStarfield({ numStars: 2000 });
-scene.add(stars);
-
 // Add OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -36,13 +33,25 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const loader = new THREE.TextureLoader();
 
 // Create Geometry
-const geometry = new THREE.IcosahedronGeometry(1, 12);
+const detail = 12;
+const geometry = new THREE.IcosahedronGeometry(1, detail);
 // Create Material
 const material = new THREE.MeshStandardMaterial({
   map: loader.load("/assets/earth_map.jpg"),
   // flatShading: true,
 });
+// calling getStarfield function from import
+const stars = getStarfield({ numStars: 2000 });
+scene.add(stars);
 
+const lightsMat = new THREE.MeshBasicMaterial({
+  // transparent: true,
+  // opacity: 0.6
+  map: loader.load("/assets/earth_lights.jpg"),
+  blending: THREE.AdditiveBlending, 
+});
+const lightsMesh = new THREE.Mesh(geometry, lightsMat);
+earthGroup.add(lightsMesh);
 // Create Mesh
 const earthMesh = new THREE.Mesh(geometry, material);
 earthGroup.add(earthMesh);
@@ -59,8 +68,7 @@ function animate() {
   requestAnimationFrame(animate);
 
   earthMesh.rotation.y += 0.002;
-
-  // cube.rotation.y += 0.001;
+  lightsMesh.rotation.y += 0.002;
   renderer.render(scene, camera);
 }
 
