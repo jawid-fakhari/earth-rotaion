@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "jsm/controls/OrbitControls.js";
 import getStarfield from "./src/getStarfield.js";
+import { getFresnelMat } from "./src/getFresnelMat.js";
 
 // Create Scene
 const scene = new THREE.Scene();
@@ -45,13 +46,21 @@ const stars = getStarfield({ numStars: 2000 });
 scene.add(stars);
 
 const lightsMat = new THREE.MeshBasicMaterial({
-  // transparent: true,
-  // opacity: 0.6
   map: loader.load("/assets/earth_lights.jpg"),
-  blending: THREE.AdditiveBlending, 
+  blending: THREE.AdditiveBlending,
 });
 const lightsMesh = new THREE.Mesh(geometry, lightsMat);
 earthGroup.add(lightsMesh);
+
+const cloudMat = new THREE.MeshBasicMaterial({
+  transparent: true,
+  opacity: 0.4,
+  map: loader.load("/assets/earth_clouds.jpg"),
+  blending: THREE.AdditiveBlending,
+});
+const cloudMesh = new THREE.Mesh(geometry, cloudMat);
+cloudMesh.scale.setScalar(1.01);
+earthGroup.add(cloudMesh);
 // Create Mesh
 const earthMesh = new THREE.Mesh(geometry, material);
 earthGroup.add(earthMesh);
@@ -69,6 +78,7 @@ function animate() {
 
   earthMesh.rotation.y += 0.002;
   lightsMesh.rotation.y += 0.002;
+  cloudMesh.rotation.y += 0.002;
   renderer.render(scene, camera);
 }
 
