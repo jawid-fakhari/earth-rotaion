@@ -54,13 +54,19 @@ earthGroup.add(lightsMesh);
 
 const cloudMat = new THREE.MeshBasicMaterial({
   transparent: true,
-  opacity: 0.4,
+  opacity: 0.5,
   map: loader.load("/assets/earth_clouds.jpg"),
   blending: THREE.AdditiveBlending,
 });
 const cloudMesh = new THREE.Mesh(geometry, cloudMat);
 cloudMesh.scale.setScalar(1.01);
 earthGroup.add(cloudMesh);
+
+const fresnelMat = getFresnelMat();
+const glowMesh = new THREE.Mesh(geometry, fresnelMat);
+glowMesh.scale.setScalar(1.015)
+earthGroup.add(glowMesh);
+
 // Create Mesh
 const earthMesh = new THREE.Mesh(geometry, material);
 earthGroup.add(earthMesh);
@@ -78,7 +84,8 @@ function animate() {
 
   earthMesh.rotation.y += 0.002;
   lightsMesh.rotation.y += 0.002;
-  cloudMesh.rotation.y += 0.002;
+  cloudMesh.rotation.y += 0.0025;
+  glowMesh.rotation.y += 0.002;
   renderer.render(scene, camera);
 }
 
